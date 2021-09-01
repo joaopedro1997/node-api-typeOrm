@@ -1,20 +1,15 @@
-import "reflect-metadata";
-import { createConnection } from "typeorm";
-import { Usuario } from "./entity/Usuario";
+import { app } from './app';
 
-createConnection().then(async connection => {
+const PORT = 3000;
 
-    console.log("Inserting a new user into the database...");
-    const usuario = new Usuario();
-    usuario.nome = "Timber";
-    usuario.email = "Saw";
-    await connection.manager.save(usuario);
-    console.log("Saved a new user with id: " + usuario.id);
+const server =
+    app.listen(PORT, () => console.log(`App ouvindo na porta ${PORT}`));
 
-    console.log("Loading users from the database...");
-    const usuarios = await connection.manager.find(Usuario);
-    console.log("Loaded users: ", usuarios);
+/**
+ * Ao encerrar o processo, o app é finalizado também
+ */
 
-    console.log("Here you can setup and run express/koa/any other framework.");
-
-}).catch(error => console.log(error));
+process.on('SIGINT', () => {
+    server.close();
+    console.log('App finalizado')
+})
