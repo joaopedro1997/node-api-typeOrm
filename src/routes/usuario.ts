@@ -31,6 +31,17 @@ const buscarLancamentoPorId = {
   },
 }
 
+const deletarUsuario = {
+  schema: {
+    params: {
+      yupSchema: Yup.object().shape({
+        idUsuario: Yup.number().required('O id é obrigatório'),
+      }),
+    }
+  },
+}
+
+
 /**
  * Serviço para buscar um lancamento
  */
@@ -65,3 +76,14 @@ routerUsuario.get('/', async (req, res) => {
   res.json(usuarios);
 });
 
+/**
+ * Serviço para deletar usuário
+ */
+
+routerUsuario.delete('/lancamentos/:idUsuario', expressYupMiddleware({ schemaValidator: deletarUsuario }), async (req, res) => {
+  const idUsuario = parseInt(req.params.idUsuario);
+  const usuario = await usuarioCTRL.deletarUsuario(idUsuario);
+
+  res.json(usuario);
+
+});
