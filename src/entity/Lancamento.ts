@@ -23,7 +23,8 @@ export class Lancamento {
   @Column()
   data: Date;
 
-  @ManyToOne(() => Usuario)
+  @ManyToOne(() => Usuario,
+    { onDelete: "CASCADE" })
   usuario: Usuario;
 
 
