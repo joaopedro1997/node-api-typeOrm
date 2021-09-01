@@ -10,7 +10,14 @@ export class UsuarioController {
   }
 
   async recuperarTodos() {
-    const usuarios = await getManager().find(Usuario);
+    const usuarios = await getManager()
+      .createQueryBuilder()
+      .select()
+      .from(Usuario, "usuario")
+      .where("status != 0")
+      .innerJoinAndSelect("usuario.id", "lancamentos")
+      .execute();
+
     return usuarios;
   }
 
@@ -24,6 +31,27 @@ export class UsuarioController {
       relations: ['lancamentos']
     });
     return lancamentos;
+  }
+
+  async deletarUsuario(id: number) {
+
+
+    const usuario = await getManager()
+      .createQueryBuilder()
+      .update(Usuario)
+      .set({ status: "0" }).where("id = :id", { id: id })
+      .execute()
+
+    return usuario;
+
+    // const usuario = await getManager()
+    //   .createQueryBuilder()
+    //   .delete()
+    //   .from(Usuario).where("id = :id", { id: id })
+    //   .execute()
+
+    // return usuario;
+
   }
 
 }

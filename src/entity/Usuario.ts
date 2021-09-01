@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, IsNull } from "typeorm";
 import { Lancamento } from "./Lancamento";
 
 @Entity()
@@ -15,8 +15,16 @@ export class Usuario {
     @Column()
     nome: string;
 
-    @Column()
+    @Column("varchar", { length: 50 })
     email: string;
+
+    @Column(
+        {
+            type: "tinyint",
+            nullable: true,
+            default: "1"
+        })
+    status: string;
 
     @OneToMany(() => Lancamento, lancamento => lancamento.usuario)
     lancamentos: Lancamento[];
