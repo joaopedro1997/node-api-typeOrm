@@ -1,5 +1,4 @@
 import { createQueryBuilder, getManager } from "typeorm";
-import { Lancamento } from "../entity/Lancamento";
 import { Usuario } from "../entity/Usuario";
 
 export class UsuarioController {
@@ -11,19 +10,11 @@ export class UsuarioController {
 
   async recuperarTodos() {
 
-    const usuario = await createQueryBuilder(Usuario,"user")
-    .leftJoinAndSelect(Lancamento,"l", "l.usuarioId",)
-    // .where("user.name = :name", { name: "Timber" })
-    .execute();
+    const usuario = await createQueryBuilder(Usuario, "u")
+      .leftJoinAndSelect("u.lancamentos", "lancamento")
+      .getOne();
 
     return usuario;
-    // const usuarios = await getManager()
-    //     .createQueryBuilder(Usuario, 'u')
-    //     .select()
-    //     .addSelect("l.*")
-    //     .leftJoin(Lancamento, 'l', 'l.usuarioId = u.id') //INNER JOIN table2 t2 ON t1.id = t2.id
-    //     .execute() // depend on what you need really
-    // return usuarios;
   }
 
   async recuperarPorId(id: number) {
@@ -48,15 +39,6 @@ export class UsuarioController {
       .execute()
 
     return usuario;
-
-    // const usuario = await getManager()
-    //   .createQueryBuilder()
-    //   .delete()
-    //   .from(Usuario).where("id = :id", { id: id })
-    //   .execute()
-
-    // return usuario;
-
   }
 
 }
