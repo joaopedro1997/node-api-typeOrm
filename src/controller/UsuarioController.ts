@@ -1,33 +1,54 @@
-import { createQueryBuilder, getManager } from "typeorm";
-import { Lancamento } from "../entity/Lancamento";
+import { createQueryBuilder, getManager, Not } from "typeorm";
 import { Usuario } from "../entity/Usuario";
 
 export class UsuarioController {
 
   async salvar(usuario: Usuario) {
+
     const usuarioSalvo = await getManager().save(usuario);
+
     return usuarioSalvo;
+
+    /**
+     * consulta com queryBuilder do typeOrm
+     */
+
+    // const usuarioSalvo = await createQueryBuilder()
+    //   .insert()
+    //   .into(Usuario)
+    //   .values(usuario)
+    //   .execute();
+
+    // return usuarioSalvo;
+
   }
 
   async recuperarTodos() {
 
-    const usuario = await createQueryBuilder(Usuario,"user")
-    .leftJoinAndSelect(Lancamento,"l", "l.usuarioId",)
-    // .where("user.name = :name", { name: "Timber" })
-    .execute();
+    /**
+     * consulta com queryBuilder do typeOrm
+     */
 
-    return usuario;
-    // const usuarios = await getManager()
-    //     .createQueryBuilder(Usuario, 'u')
-    //     .select()
-    //     .addSelect("l.*")
-    //     .leftJoin(Lancamento, 'l', 'l.usuarioId = u.id') //INNER JOIN table2 t2 ON t1.id = t2.id
-    //     .execute() // depend on what you need really
-    // return usuarios;
+    const usuarios = await createQueryBuilder(Usuario, "u")
+      .leftJoinAndSelect("u.lancamentos", "lancamento")
+      .where({ id: Not("0") })
+      .getMany();
+
+
+    // const usuario = await getManager()
+    //   .find(Usuario, {
+    //     relations: ['lancamentos'],
+    //     where: { status: Not("0") }
+    //   });
+
+    return usuarios;
   }
 
   async recuperarPorId(id: number) {
-    const usuario = await getManager().findOne(Usuario, id);
+    const usuario = await
+      getManager()
+        .findOne(Usuario, id)
+
     return usuario;
   }
 
@@ -35,28 +56,26 @@ export class UsuarioController {
     const lancamentos = await getManager().findOne(Usuario, id, {
       relations: ['lancamentos']
     });
+
     return lancamentos;
   }
 
   async deletarUsuario(id: number) {
 
-
-    const usuario = await getManager()
-      .createQueryBuilder()
-      .update(Usuario)
-      .set({ status: "0" }).where("id = :id", { id: id })
-      .execute()
-
-    return usuario;
+    /**
+     * consulta com queryBuilder do typeOrm
+     */
 
     // const usuario = await getManager()
     //   .createQueryBuilder()
-    //   .delete()
-    //   .from(Usuario).where("id = :id", { id: id })
+    //   .update(Usuario)
+    //   .set({ status: "0" }).where("id = :id", { id: id })
     //   .execute()
 
-    // return usuario;
+    const usuario = await getManager()
+      .update(Usuario, { id: id }, { status: "0" });
 
+    return usuario;
   }
 
 }
