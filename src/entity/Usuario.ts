@@ -26,7 +26,8 @@ export class Usuario {
         })
     status: string;
 
-    @OneToMany(() => Lancamento, lancamento => lancamento.usuario)
+    @OneToMany(type => Lancamento, lancamento => lancamento.usuario)
+    // @OneToMany(() => Lancamento, lancamento => lancamento.usuario)
     lancamentos: Lancamento[];
 
 }

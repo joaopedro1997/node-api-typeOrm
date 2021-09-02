@@ -12,7 +12,7 @@ services:
             - "./data/db/mysql:/var/lib/mysql"
     app:
         container_name: node-typeorm-api
-        restart: always #caso ela caia ela ira reiniciar
+        restart: always #caso ele caia ela ira reiniciar
         build: .
         ports:
             - "3000:3000"
